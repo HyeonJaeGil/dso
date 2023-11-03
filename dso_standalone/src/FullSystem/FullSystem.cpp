@@ -389,20 +389,23 @@ Vec4 FullSystem::trackNewCoarse(FrameHessian* fh)
 
 		if(i != 0)
 		{
-			printf("RE-TRACK ATTEMPT %d with initOption %d and start-lvl %d (ab %f %f): %f %f %f %f %f -> %f %f %f %f %f \n",
-					i,
-					i, pyrLevelsUsed-1,
-					aff_g2l_this.a,aff_g2l_this.b,
-					achievedRes[0],
-					achievedRes[1],
-					achievedRes[2],
-					achievedRes[3],
-					achievedRes[4],
-					coarseTracker->lastResiduals[0],
-					coarseTracker->lastResiduals[1],
-					coarseTracker->lastResiduals[2],
-					coarseTracker->lastResiduals[3],
-					coarseTracker->lastResiduals[4]);
+			if(!setting_debugout_runquiet)
+			{
+				printf("RE-TRACK ATTEMPT %d with initOption %d and start-lvl %d (ab %f %f): %f %f %f %f %f -> %f %f %f %f %f \n",
+						i,
+						i, pyrLevelsUsed-1,
+						aff_g2l_this.a,aff_g2l_this.b,
+						achievedRes[0],
+						achievedRes[1],
+						achievedRes[2],
+						achievedRes[3],
+						achievedRes[4],
+						coarseTracker->lastResiduals[0],
+						coarseTracker->lastResiduals[1],
+						coarseTracker->lastResiduals[2],
+						coarseTracker->lastResiduals[3],
+						coarseTracker->lastResiduals[4]);
+			}
 		}
 
 
