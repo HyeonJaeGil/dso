@@ -137,6 +137,10 @@ if (OpenCV_FOUND AND Pangolin_FOUND)
 						${LIBZIP_LIBRARY} 
 						${Pangolin_LIBRARIES} 
 						${OpenCV_LIBS})
+	# install executable
+	install(TARGETS dso_dataset
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
 else()
 	message("--- not building dso_dataset, since either don't have openCV or Pangolin.")
 endif()
