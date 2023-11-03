@@ -35,6 +35,7 @@
 #include "util/globalFuncs.h"
 #include <Eigen/LU>
 #include <algorithm>
+#include <iomanip>
 #include "IOWrapper/ImageDisplay.h"
 #include "util/globalCalib.h"
 #include <Eigen/SVD>
@@ -55,6 +56,7 @@
 #include "util/ImageAndExposure.h"
 
 #include <cmath>
+#include <boost/format.hpp>
 
 namespace dso
 {
@@ -249,7 +251,7 @@ void FullSystem::printResult(std::string file)
 
 	std::ofstream myfile;
 	myfile.open (file.c_str());
-	myfile << std::setprecision(15);
+	myfile << std::fixed << std::setprecision(15);
 
 	for(FrameShell* s : allFrameHistory)
 	{
@@ -257,12 +259,24 @@ void FullSystem::printResult(std::string file)
 
 		if(setting_onlyLogKFPoses && s->marginalizedAt == s->id) continue;
 
-		myfile << s->timestamp <<
-			" " << s->camToWorld.translation().transpose()<<
-			" " << s->camToWorld.so3().unit_quaternion().x()<<
-			" " << s->camToWorld.so3().unit_quaternion().y()<<
-			" " << s->camToWorld.so3().unit_quaternion().z()<<
-			" " << s->camToWorld.so3().unit_quaternion().w() << "\n";
+        Eigen::Vector3d trans = s->camToWorld.translation();
+        Eigen::Quaterniond quat = s->camToWorld.so3().unit_quaternion();
+		double timestamp = s->timestamp;
+		double x = trans(0);
+		double y = trans(1);
+		double z = trans(2);
+		double qx = quat.x();
+		double qy = quat.y();
+		double qz = quat.z();
+		double qw = quat.w();
+		myfile << boost::format("%f %f %f %f %f %f %f %f\n") % timestamp % x % y % z % qx % qy % qz % qw;
+
+		// myfile << s->timestamp << 
+		// " " << s->camToWorld.translation().transpose() << 
+		// " " << s->camToWorld.so3().unit_quaternion().x() << 
+		// " " << s->camToWorld.so3().unit_quaternion().y() << 
+		// " " << s->camToWorld.so3().unit_quaternion().z() << 
+		// " " << s->camToWorld.so3().unit_quaternion().w() << "\n";
 	}
 	myfile.close();
 }

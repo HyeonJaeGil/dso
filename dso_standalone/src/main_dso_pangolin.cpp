@@ -51,6 +51,7 @@
 #include "IOWrapper/OutputWrapper/SampleOutputWrapper.h"
 
 
+std::string root = "";
 std::string vignette = "";
 std::string gammaCalib = "";
 std::string source = "";
@@ -264,6 +265,16 @@ void parseArgument(char* arg)
 		return;
 	}
 
+	if(1==sscanf(arg,"root=%s",buf))
+	{
+		// root might have a trailing slash, but we don't want that.
+		root = buf;
+		if(root[root.size()-1] == '/')
+			root = root.substr(0, root.size()-1);
+		printf("root folder is %s!\n", root.c_str());
+		return;
+	}
+
 	if(1==sscanf(arg,"files=%s",buf))
 	{
 		source = buf;
@@ -360,8 +371,19 @@ int main( int argc, char** argv )
 	// hook crtl+C.
 	boost::thread exThread = boost::thread(exitThread);
 
-
-	ImageFolderReader* reader = new ImageFolderReader(source,calib, gammaCalib, vignette);
+	// if root is not empty, everything is relative to root
+	if (!root.empty())
+	{
+		if (!source.empty())
+			source = root + "/" + source;
+		if (!calib.empty())
+			calib = root + "/" + calib;
+		if (!vignette.empty())
+			vignette = root + "/" + vignette;
+		if (!gammaCalib.empty())
+			gammaCalib = root + "/" + gammaCalib;
+	}
+	ImageFolderReader* reader = new ImageFolderReader(source, calib, gammaCalib, vignette);
 	reader->setGlobalCalibration();
 
 
@@ -531,7 +553,11 @@ int main( int argc, char** argv )
         gettimeofday(&tv_end, NULL);
 
 
-        fullSystem->printResult("result.txt");
+		// save the result.txt file in the root folder if it is not empty
+		if (!root.empty())
+			fullSystem->printResult(root + "/result.txt");
+		else
+			fullSystem->printResult("result.txt");
 
 
         int numFramesProcessed = abs(idsToPlay[0]-idsToPlay.back());
