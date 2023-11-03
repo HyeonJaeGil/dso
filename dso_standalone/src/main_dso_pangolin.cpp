@@ -56,6 +56,7 @@ std::string vignette = "";
 std::string gammaCalib = "";
 std::string source = "";
 std::string calib = "";
+std::string resultPath = "result.txt";
 double rescale = 1;
 bool reverse = false;
 bool disableROS = false;
@@ -300,6 +301,13 @@ void parseArgument(char* arg)
 	{
 		gammaCalib = buf;
 		printf("loading gammaCalib from %s!\n", gammaCalib.c_str());
+		return;
+	}
+
+	if(1==sscanf(arg,"result=%s",buf))
+	{
+		resultPath = buf;
+		printf("saving result to %s!\n", resultPath.c_str());
 		return;
 	}
 
@@ -555,9 +563,9 @@ int main( int argc, char** argv )
 
 		// save the result.txt file in the root folder if it is not empty
 		if (!root.empty())
-			fullSystem->printResult(root + "/result.txt");
+			fullSystem->printResult(root + "/" + resultPath);
 		else
-			fullSystem->printResult("result.txt");
+			fullSystem->printResult(resultPath);
 
 
         int numFramesProcessed = abs(idsToPlay[0]-idsToPlay.back());
