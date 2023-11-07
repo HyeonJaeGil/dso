@@ -256,6 +256,15 @@ int PixelSelector::makeMaps(
 //			100*numHaveSub/(float)(wG[0]*hG[0]));
 	currentPotential = idealPotential;
 
+	// if setting_maskStartRowRatio is not 1 (considering it is floating point)
+	// set the part where map_out's rows are bigger than setting_maskStartRowRatio * hG[0] to 0
+	if(setting_maskStartRowRatio < 1)
+	{
+		int maskStartRow = setting_maskStartRowRatio * hG[0];
+		for(int y=maskStartRow; y<hG[0]; y++)
+			for(int x=0; x<wG[0]; x++)
+				map_out[x+y*wG[0]] = 0;
+	}
 
 	if(plot)
 	{

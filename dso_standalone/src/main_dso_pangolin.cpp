@@ -325,6 +325,13 @@ void parseArgument(char* arg)
 		return;
 	}
 
+	if(1==sscanf(arg,"mask=%f",&foption))
+	{
+		setting_maskStartRowRatio = foption;
+		printf("mask ratio %f!\n", setting_maskStartRowRatio);
+		return;
+	}
+
 	if(1==sscanf(arg,"save=%d",&option))
 	{
 		if(option==1)
@@ -374,7 +381,10 @@ int main( int argc, char** argv )
 {
 	//setlocale(LC_ALL, "");
 	for(int i=1; i<argc;i++)
+	{
+		std::cout << argv[i] << std::endl;
 		parseArgument(argv[i]);
+	}
 
 	// hook crtl+C.
 	boost::thread exThread = boost::thread(exitThread);
